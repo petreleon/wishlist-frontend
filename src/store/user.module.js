@@ -40,7 +40,7 @@ export default {
             });
         },
         register({commit}, {email, password, username, firstName, lastName}) {
-            axios.post(config.links.register, {email, password, username, firstName, lastName})
+            return axios.post(config.links.register, {email, password, username, firstName, lastName})
             .then(() => {
                 axios.post(config.links.login, {email, password}).then(res => {
                     commit('setToken', res.data.token);

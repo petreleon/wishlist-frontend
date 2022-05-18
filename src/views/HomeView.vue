@@ -44,6 +44,7 @@
                   <td>
                     <v-btn
                       color="primary"
+                      @click="goToList(list._id)"
                     >
                       To list
                     </v-btn>
@@ -108,6 +109,10 @@ export default {
     logout()
     {
       this.$store.dispatch('User/logout');
+    },
+    goToList(id)
+    {
+      this.$router.push({name: 'list', params: {id: id}});
     }
   },
   mounted() {
