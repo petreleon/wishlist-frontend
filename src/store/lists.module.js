@@ -27,7 +27,7 @@ export default {
     actions: {
         getLists({commit, rootState}) {
             console.log(rootState.User.user.token);
-            axios.get(config.links.lists, {
+            return axios.get(config.links.lists, {
                 headers: {
                     'Authorization': rootState.User.user.token
                     }
@@ -36,26 +36,28 @@ export default {
                     commit("setLists", res.data.lists);
                 });
         },
-        getList({commit, rootState}, id) {
-            axios.get("/api/lists/" + id, {
-                headers: {
-                    'Authorization': rootState.User.user.token
-                    }
-                })
+        getList({commit}, id) {
+            return axios.get(config.links.list + id)
                 .then(res => {
                     console.log(res.data);
                     commit("setList", res.data.list);
+                    commit("setListItems", res.data.elements);
                 });
         },
-        // searchListAndItems({commit, rootState}, {listId, search}) {
-        //     axios.get("/api/lists/" + listId + "/search?search=" + search)
-        //         .then(res => {
-        //             commit("setLists", res.data.lists);
-        //             commit("setListItems", res.data.listItems);
-        //         });
-        // },
+        searchListAndItems({commit, rootState}, {search}) {
+            return axios.post(config.links.search, {query:search}, {
+                headers: {
+                        'Authorization': rootState.User.user.token
+                    }
+                }
+            )
+            .then(res => {
+                commit("setLists", res.data.lists);
+                commit("setListItems", res.data.elements);
+            });
+        },
         addList({commit, rootState}, {name}) {
-            axios.post("/api/lists", {name}, {
+            return axios.post("/api/lists", {name}, {
                 headers: {
                     'Authorization': rootState.User.user.token
                     }
@@ -63,6 +65,41 @@ export default {
                 .then(() => {
                     commit("getLists");
                 });
+        },
+        deleteList({commit, rootState}, {id}) {
+            return axios.delete(config.links.list + id, {
+                headers: {
+                    'Authorization': rootState.User.user.token
+                }
+            })
+        },
+        modifyListName({commit, rootState}, {id, name}) {
+            return axios.put(config.links.list + id, {name}, {
+                headers: {
+                    'Authorization': rootState.User.user.token
+                }
+            })
+        },
+        addListItem({commit, rootState}, {id, link}) {
+            return axios.post(config.links.list + id + '/element', {link}, {
+                headers: {
+                    'Authorization': rootState.User.user.token
+                }
+            });
+        },
+        deleteListItem({commit, rootState}, {id}) {
+            return axios.delete(config.links.listElement + id, {
+                headers: {
+                    'Authorization': rootState.User.user.token
+                }
+            });
+        },
+        changeChecked({commit, rootState}, {id}) {
+            return axios.put(config.links.changeChecked + id, {}, {
+                headers: {
+                    'Authorization': rootState.User.user.token
+                }
+            });
         }
     }
 }

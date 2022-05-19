@@ -6,6 +6,7 @@ export default {
         refresh: server + '/login/refresh',
         lists: server + '/wishlist/',
         list: server + '/wishlist/list/',
+        listElement: server + '/wishlist/listelement/',
         search: server + '/wishlist/search',
         changeChecked: server + '/wishlist/changechecked/'
     },
