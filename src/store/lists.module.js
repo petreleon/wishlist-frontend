@@ -17,8 +17,7 @@ export default {
             state.lists = lists;
         },
         setList(state, list) {
-            state.list = list.list;
-            state.listItems = list.listItems;
+            state.list = list;
         },
         setListItems(state, listItems) {
             state.listItems = listItems;
@@ -44,7 +43,7 @@ export default {
                     commit("setListItems", res.data.elements);
                 });
         },
-        searchListAndItems({commit, rootState}, {search}) {
+        searchListsAndItems({commit, rootState}, {search}) {
             return axios.post(config.links.search, {query:search}, {
                 headers: {
                         'Authorization': rootState.User.user.token
@@ -57,7 +56,7 @@ export default {
             });
         },
         addList({commit, rootState}, {name}) {
-            return axios.post("/api/lists", {name}, {
+            return axios.post(config.links.list, {name}, {
                 headers: {
                     'Authorization': rootState.User.user.token
                     }
@@ -66,40 +65,49 @@ export default {
                     commit("getLists");
                 });
         },
-        deleteList({commit, rootState}, {id}) {
+        deleteList({rootState}, {id}) {
             return axios.delete(config.links.list + id, {
                 headers: {
                     'Authorization': rootState.User.user.token
                 }
             })
         },
-        modifyListName({commit, rootState}, {id, name}) {
+        modifyListName({rootState}, {id, name}) {
             return axios.put(config.links.list + id, {name}, {
                 headers: {
                     'Authorization': rootState.User.user.token
                 }
             })
         },
-        addListItem({commit, rootState}, {id, link}) {
+        addListItem({rootState}, {id, link}) {
             return axios.post(config.links.list + id + '/element', {link}, {
                 headers: {
                     'Authorization': rootState.User.user.token
                 }
             });
         },
-        deleteListItem({commit, rootState}, {id}) {
+        deleteListItem({rootState}, {id}) {
             return axios.delete(config.links.listElement + id, {
                 headers: {
                     'Authorization': rootState.User.user.token
                 }
             });
         },
-        changeChecked({commit, rootState}, {id}) {
+        changeChecked({rootState}, {id}) {
             return axios.put(config.links.changeChecked + id, {}, {
                 headers: {
                     'Authorization': rootState.User.user.token
                 }
             });
+        },
+        publicUrl(_, {id}){
+            let origin = window.location.origin+'/#/public/'+id;
+            const copyToClipboard = str => {
+                if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+                  return navigator.clipboard.writeText(str);
+                return Promise.reject('The Clipboard API is not available.');
+            }
+            return copyToClipboard(origin);
         }
     }
 }

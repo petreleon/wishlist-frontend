@@ -2,27 +2,15 @@
   <div v-if="list">
     <v-app-bar color="deep-purple accent-4" dense dark>
 
-
       <v-toolbar-title>{{ list.name }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon @click="toAdd">
-        <v-icon>mdi-plus-circle</v-icon>
-      </v-btn>
       <v-btn icon @click="copyPublicUrl">
         <v-icon>mdi-share</v-icon>
       </v-btn>
-      <v-btn icon @click="toEditListName">
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-
-      <v-btn color="red accent-1" depressed @click="deleteIt">
-        <v-icon left> mdi-delete </v-icon>
-        Delete
-      </v-btn>
       <v-btn icon @click="toHome">
-        <v-icon>mdi-undo</v-icon>
+        <v-icon>mdi-home</v-icon>
       </v-btn>
     </v-app-bar>
     <div
@@ -31,15 +19,15 @@
       v-for="item in listItems"
       :key="item._id"
       :item="item"
-      :isOwner="true"
-      :next="getList"/></div>
+      :isOwner="false"
+      /></div>
     
   </div>
 </template>
 
 <script>
-import ListItem from "@/components/ListItem.vue";
 import { mapActions } from 'vuex';
+import ListItem from "@/components/ListItem.vue";
 export default {
   components: {
     ListItem
@@ -63,28 +51,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions("Lists", ["deleteList", "publicUrl"]),
-    toHome() {
-      this.$router.push("/");
-    },
+    ...mapActions("Lists", ["publicUrl"]),
     getList() {
       this.$store.dispatch("Lists/getList", this.$route.params.id);
     },
-    toAdd() {
-      this.$router.push({
-        name: 'addListItem',
-        params: {
-          id: this.$route.params.id
-        }
-      });
-    },
-    toEditListName() {
-      this.$router.push({
-        name: 'editListName',
-        params: {
-          id: this.$route.params.id
-        }
-      });
+    toHome() {
+      this.$router.push("/");
     },
     deleteIt(){
       this.deleteList({id: this.$route.params.id}).then(() => {
@@ -94,7 +66,6 @@ export default {
     copyPublicUrl(){
       this.publicUrl({id: this.$route.params.id});
     }
-    
   },
 };
 </script>
