@@ -1,4 +1,4 @@
-const server = 'http://localhost:80'
+const server = 'https://bestwishlistapi.herokuapp.com'
 export default {
     links: {
         login: server + '/login',
